@@ -30,7 +30,7 @@ Goals:
 -  explicit is better then implicit - wonder is only the frame for your
    game
 -  Component based - more components, less classes
--  Inspired by Unity 3D - Similar names for object types and methods
+-  Inspired by Unity 3D
 -  Physics engine included
 
 
