@@ -1,3 +1,16 @@
+"""Python Game Engine based on pygame and physics engine box2d
+
+This module includes all classes and functions of the game engine.
+
+.. _wonder game engine web page:
+   https://github.com/Python-Ninja-Hebi/wonder
+
+Documented with Google Python Style Doctrings
+
+.. _Google Python Style Guide:
+   http://google.github.io/styleguide/pyguide.html
+    """
+
 from __future__ import annotations
 from Box2D.Box2D import b2Body, b2Contact, b2ContactImpulse, b2Fixture, b2RevoluteJoint #forward references
 
@@ -37,6 +50,8 @@ WHITE = (255, 255, 255)
 # ----- central game engine systems ----
 
 class MixinGameSystem:
+    """[summary]
+    """
     def on_load_scene(self, scene:Scene):
         pass
 
@@ -98,6 +113,8 @@ class GameObject(MixinUpdate):
         return r
 
 class Scene:
+    """[summary]
+    """
     def __init__(self) -> None:
         self.init()
 
@@ -1281,11 +1298,17 @@ class Image(GameObject, MixinDraw):
 # ----- central game engine ----
 
 class Game:
+    """[summary]
 
+    Raises:
+        Exception: [description]
+
+    Returns:
+        [type]: [description]
+    """
     instance:Game = None
-
     def __init__(self, width:int=800, height:int=600, name:str="", fps:int=30, scenes:List[Scene]=None) -> None:
-
+        
         if not Game.instance:
             Game.instance = self
         else:

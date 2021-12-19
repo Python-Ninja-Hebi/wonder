@@ -3,3 +3,4 @@
 /.vscode
 /wonder.egg-info
 /README.ipynb
+/__pycache__

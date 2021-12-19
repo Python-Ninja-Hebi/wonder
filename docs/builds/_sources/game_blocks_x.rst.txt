@@ -1,0 +1,7 @@
+game\_blocks\_x module
+======================
+
+.. automodule:: game_blocks_x
+   :members:
+   :undoc-members:
+   :show-inheritance:

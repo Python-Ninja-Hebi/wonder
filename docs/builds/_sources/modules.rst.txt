@@ -1,0 +1,11 @@
+python-ninja-wonder
+===================
+
+.. toctree::
+   :maxdepth: 4
+
+   example_tile
+   game_blocks
+   game_blocks_x
+   game_tile
+   wonder

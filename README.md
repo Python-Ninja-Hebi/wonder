@@ -36,7 +36,7 @@ All game assets that I use in examples are free and from https://www.kenney.nl. 
 
 ## acclaimer
 
-You can use this alpha version 0.1.0 of the game engine `wonder` but there will be some changes in the future.
+You can use this alpha version 0.1.0 of the `wonder` game engine but there will be some changes in the future.
 
 ## installing wonder game engine
 
@@ -72,76 +72,641 @@ cp wonder.py
 
 ## wonder game engine - making a new game 
 
+The first game with `wonder`game engine is a classical 'Ball and Paddle game' like Arkanoid, Breakout or Alleyway.  
+
+Arkanoid https://en.wikipedia.org/wiki/Arkanoid  
+Breakeout https://en.wikipedia.org/wiki/Breakout_(video_game)  
+Alleyway https://en.wikipedia.org/wiki/Alleyway_(video_game)
+
+You can find the complete game in the file *game_blocks.py*
+
+<img src="img/game_blocks.png" width="256" align="left"><br><br><br><br><br><br><br><br><br><br>
+
 ### main game
+
+The easiest way to get access to all classes of the **wonder** game engine is to include them completely.
 
 
 ```python
-
+from wonder import *
 ```
 
-### level 1 - scene
+First you need an object of the class **Game**. It represents the game itself.
 
-A scene contains of gameobject
 
-create  
+```python
+if __name__ == "__main__":
+    game = Game(width=860,height=600,name='game_blocks.py',scenes=[Level()])
+    game.quit()
+```
 
-add gameobject
+Class **Game**:
+* *width* .. screen width in pixel
+* *height* .. screen height in pixel
+* *name* .. name of the game, shown as window title
+* *scenes* .. list of sences, levels of the game
+
+Method **game.quit()** stops the game.
+
+### scene
+
+An object of the class **Scene** is a container that contains all things (gameobjects) that are currently required by the game. Often a scene corresponds to a level.
+
+
+```python
+class Level(Scene):
+    def create(self):
+        self.background_color = WHITE
+        #create gameobjects
+```
+
+To create a new level you have to derive your own class from the **Scene** class.
+The **create** method is called by the game engine to create all game objects of the scene.
+
+<img src="img/game_blocks_1.png" width="256" align="left"><br><br><br><br><br><br><br><br><br><br>
 
 ### gameobject
 
-first gameobject Racket   
-add SpriteRender Component  
-fixed_rotation
+The first part of the game is the **paddle**, on which the player has to bounce the ball with it in order to hit colored blocks.
+
+The paddle has its own class **Paddle** that is derived from the **GameObject** class.
 
 
 ```python
+class Paddle(GameObject):
+    def __init__(self):
+        super().__init__()
+
+    def update(self, delta_time):
+        # all action
+        pass
+```
+
+Class **GameObject**:
+
+* *\_\_init\_\_* .. creates all components and property, allways have to call super().\_\_init\_\_()
+* *update* .. is called as often as possible by the game engine.
+* *delta_time* .. describes the time since the last call 
+
+A **GameObject** can have **Components** that do some jobs for them.  
+
+The component **SpriteRender** draws an image (sprite) on the screen that represents the  **GameObject**.
+position
+add Racket to Scene
+
+
+```python
+class Paddle(GameObject):
+    DISTANCE = 20
+    def __init__(self):
+        super().__init__()
+        self.sprite_renderer = self.add(SpriteRenderer(self, load_from_file='res_blocks/paddleBlu.png'))
+        self.transform.position = Vector2(Game.instance.width//4*3//2, 
+                                          Game.instance.height - self.sprite_renderer.rect.height - self.DISTANCE)
 
 ```
+
+* *self.add* .. method self.add adds the component *SpriteRenderer* to the gameobject and returns the added component
+* *self.transform.position* .. a gameobject has *transform* property. With *transform.position* you can change the position.  
+
+**wonder** game engine uses pygame **Vector2** for positions.
+
+With **Game.instance** you get the current game object.
+
+To see anything you have to add the gameobject to the scene.
+
+
+```python
+class Level(Scene):
+    def create(self):
+        ..
+
+        self.add(Paddle())
+```
+
+<img src="img/game_blocks_2.png" width="256" align="left"><br><br><br><br><br><br><br><br><br><br>
+
+In order for the physics engine to realistically calculate for example the movements of the ball, it needs information about the physical properties of the paddle.  
+
+
+```python
+class Paddle(GameObject):
+    DISTANCE = 20
+    def __init__(self):
+        super().__init__()
+        ..
+        self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))
+        self.rigidbody.fixed_rotation = True
+        self.add(BoxCollider(self,self.rigidbody,box=(self.sprite_renderer.rect.width,
+                                                      self.sprite_renderer.rect.height)))
+
+```
+
+* *Rigidbody(self,DYNAMIC_BODY)* .. the component **Rigidbody** defines the gameobject as a rigid object. It is not soft.
+* *DYNAMIC_BODY* .. means that the gameobject can be moved by the physics engien
+* *self.rigidbody.fixed_rotation = True* .. The paddle is always level. It shouldn't be rotated.
+* *BoxCollider(self,self.rigidbody,box=(width,height))* .. the component **BoxCollider** defines the extension of the gameobject. The paddle is like a box. You can get width and height from the **SpriteRenderer**. It is the width and height of the image. 
+
+
+```python
+class Level(Scene):
+    def create(self):
+        ..
+        Game.instance.physic_system.gravity = (0.0,0.0)
+```
+
+In this game should not be used any gravity.
 
 ### create border
 
-component rigidbody static
+The game has a border on the left, one on the right, and one on top. The ball can bounce off these. There is no limit below. There it goes out.
+
+<img src="img/game_blocks_3.png" width="256" align="left"><br><br><br><br><br><br><br><br><br><br>
+
+A border object is from the **Border** class that is derived from the **GameObject** class.
 
 
 ```python
-
+class Border(GameObject):
+    HEIGHT = 20
+    def __init__(self, width, height, position):
+        super().__init__()
+        image = pygame.Surface((width, height))
+        image.fill(GRAY)
+        self.add(SpriteRenderer(self, image=image))
+        self.transform.position = position
 ```
 
-### create blocks
+Class **Border**  
 
-#### move racket
+* *\_\_init\_\_(self, width, height, position)* .. with, height and position of the border that should be created
+* *image = pygame.Surface((width, height))* .. the **Surface** class of pygame can create a local image
+* *image.fill(GRAY)* .. the image is a grey rectangle
+* *self.add(SpriteRenderer(self, image=image))* .. add **SpriteRenderer** component
+* *self.transform.position = position* .. set border position
 
-#### debug
+
+```python
+class Border(GameObject):
+    HEIGHT = 20
+    def __init__(self, width, height, position):
+        ..
+        rigidbody = self.add(Rigidbody(self,STATIC_BODY))
+        self.add(BoxCollider(self, rigidbody, box=(width,height)))
+```
+
+* *Rigidbody(self,STATIC_BODY)* .. the border is also a rigid body.
+* *STATIC_BODY* .. means that the gameobject can not be moved by the physics engine
+* *BoxCollider(self,self.rigidbody,box=(width,height))* .. the border is like a box.
+
+The **Scene** class creates the borders.
+
+
+```python
+class Level(Scene):
+    def create(self):
+        ..
+        three_quarter = Game.instance.width//4*3
+
+        self.add(Border(three_quarter, Border.HEIGHT, 
+                        Vector2(three_quarter//2,Border.HEIGHT//2)))
+        self.add(Border(Border.HEIGHT, Game.instance.height-Border.HEIGHT,
+                        Vector2(Border.HEIGHT//2, (Game.instance.height+Border.HEIGHT)//2) ))
+        self.add(Border(Border.HEIGHT, 
+                        Game.instance.height-Border.HEIGHT,Vector2(three_quarter-Border.HEIGHT//2, (Game.instance.height+Border.HEIGHT)//2) ))
+```
+
+### move paddle
+
+The user can move the paddle with the left and write arrow keys.
+
+
+```python
+class Paddle(GameObject):
+    ..
+    SPEED = 120
+    
+    ..
+    def update(self, delta_time):
+        direction = 0.0
+
+        keys=pygame.key.get_pressed()
+    
+        if keys[pygame.K_RIGHT]:
+            direction = 1
+        elif keys[pygame.K_LEFT]:
+            direction = -1
+
+        self.rigidbody.velocity = Vector2(1,0) * direction * self.SPEED
+```
+
+* *SPEED = 120* .. constant speed when paddle is moved. It is 120 pixle per second.
+* *direction* .. 0 not moved, -1 moving left, 1 moving right
+* *keys=pygame.key.get_pressed()* .. pygame list with pressed or not pressed keys
+* *keys[pygame.K_RIGHT]* .. is True when right arrow key is pressed
+* *keys[pygame.K_LEFT]* .. is True when left arrow key is pressed
+* *self.rigidbody.velocity = Vector2(1,0) * direction * self.SPEED* .. sets the velocity of the paddle for the game engine 
+
+### debug physics
+
+You can switch to a special display for troubleshooting in connection with the physics engine.
+
+<img src="img/game_blocks_4.png" width="256" align="left"><br><br><br><br><br><br>
+
+
+```python
+class Paddle(GameObject):
+    ..
+    def update(self, delta_time):
+        ..
+        if keys[pygame.K_ESCAPE]:
+            Game.instance.debug_physic_system_tag = not Game.instance.debug_physic_system_tag
+```
+
+* *Game.instance.debug_physic_system_tag* .. when this property is True the game engine debug display is shown
 
 ### create ball
 
-restitution   
-component rigidbody  
-component circlecollider
-
-#### move ball
+A ball has a **SpriteRenderer**, a **Rigidbody**, and a **CircleBollider** component.
 
 
 ```python
-
+class Ball(GameObject):
+    SPEED = 240
+    def __init__(self):
+        super().__init__()
+        sprite_renderer = self.add(SpriteRenderer(self, load_from_file='res_blocks/ballGrey.png'))
+        self.transform.position = Vector2(Game.instance.width//4*3//2, Game.instance.height//2)
+        
+        self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))
+        self.add(CircleCollider(self,self.rigidbody,radius=sprite_renderer.rect.width//2,restitution=1.0,friction=0))
+        self.rigidbody.velocity = Vector2(0,0) * self.SPEED
+        self.rigidbody.mass = 0.2
 ```
+
+* *self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))* .. add Rigidbody component 
+* *self.add(CircleCollider(self,self.rigidbody,radius=sprite_renderer.rect.width//2,restitution=1.0,friction=0))* .. CircleCollider component
+* *self.rigidbody.velocity = Vector2(0,0)* .. sets start velocity to zero
+* *self.rigidbody.mass = 0.2* .. sets mass
+
+Add ball to scene.
+
+
+```python
+class Level(Scene):
+    def create(self):
+        ..
+        self.add(Ball())
+```
+
+<img src="img/game_blocks_5.png" width="256" align="left"><br><br><br><br><br><br>
 
 ### create block
 
-component rigidbody  
-component boxcollider
+A single block has a **SpriteRenderer**, a **Rigidbody**, and a **BoxCollider** component. 
+
+
+```python
+class Block(GameObject):
+    def __init__(self, file_name):
+        super().__init__()
+        self.sprite_renderer = self.add(SpriteRenderer(self,load_from_file=file_name))
+        self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))
+        self.rigidbody.fixed_rotation = True
+        self.add(BoxCollider(self,self.rigidbody,box=(self.sprite_renderer.rect.width,self.sprite_renderer.rect.height)))
+```
+
+Every level has a different pattern of blocks.  An object of the class **BlockManager** creates the blocks according to the pattern of the level.
+
+
+```python
+class BlockManager(GameObject):
+    FILES = ['res_blocks/element_blue_rectangle.png',
+             'res_blocks/element_green_rectangle.png',
+             'res_blocks/element_red_rectangle.png',
+             'res_blocks/element_yellow_rectangle.png']
+    SPACE = 10
+
+    def __init__(self, scene):
+        super().__init__()
+        self.scene = scene
+        self.count = 0
+```
+
+The pattern of the first level is
+
+[[0,1,2,3,0,1,2,3],  
+ [0,1,2,3,0,1,2,3],  
+ [0,1,2,3,0,1,2,3],  
+ [0,1,2,3,0,1,2,3]]  
+                            
+Every number represents a different color. The number 0 means an empty space.
+
+The **BlockManager.make** method creates the blocks.
+
+
+```python
+class BlockManager(GameObject):
+    ..
+
+    def make(self, block_pattern) -> None:
+        for i, value in enumerate(block_pattern):
+            for j, file_nr in enumerate(value):
+                self.count += 1
+                block = self.scene.add(Block(self.FILES[file_nr]))
+                block.transform.position = Vector2(Border.HEIGHT+self.SPACE+block.sprite_renderer.rect.width*(j+0.5)+self.SPACE*j,
+                                                   Border.HEIGHT+self.SPACE+block.sprite_renderer.rect.height*(i+0.5)+self.SPACE*i)
+        
+```
+
+* *for i, value in enumerate(block_pattern)* .. for every line in block_pattern
+* *for j, file_nr in enumerate(value)* .. for every value in line, value represents different png-file
+* *block = self.scene.add(Block(self.FILES[file_nr]))* .. add Block GameObject to scene
+* *block.transform.position = Vector2(..)* .. set position
+
+Add **BlockManager** to **Level**. So that the **create** method of the **Level** class does not come across to the standard **create** method, this is renamed to **create_level**.
+
+
+```python
+class Level(Scene):
+    def create_level(self,pattern):
+        ..
+        block_manager = self.add(BlockManager(self))
+        block_manager.make(pattern)
+```
+
+Create two levels with different block pattern.
+
+
+```python
+class Level1(Level):
+    def create(self) -> None:
+        self.create_level([[0,1,2,3,0,1,2,3],
+                            [0,1,2,3,0,1,2,3],
+                            [0,1,2,3,0,1,2,3],
+                            [0,1,2,3,0,1,2,3]])        
+
+class Level2(Level):
+    def create(self):
+        self.create_level([[0,1,2,3,2,1,2,0],
+                            [0,1,2,0,0,1,2,0],
+                            [0,1,0,3,1,0,2,0],
+                            [0,0,2,3,1,1,0,0]])
+```
+
+Add levels to *Game* object.
+
+
+```python
+if __name__ == "__main__":
+    game = Game(width=860,height=600,name='game_blocks.py', scenes=[Level1(), Level2()])
+    game.quit()
+```
+
+<img src="img/game_blocks_6.png" width="256" align="left"><br><br><br><br><br><br>
 
 ### create scoremanager
 
-get_object   
-start_tag  
-draw_text 
+Tasks of the **ScoreManager** are
 
-### restrart
+* managing the game
+* restarting the game
+* do the scoring
 
-#### 0 ball level 1
 
-### next level
+```python
+class ScoreManager(GameObject,MixinDraw):
+    def __init__(self):
+        super().__init__()
+        
+        self.init()
+
+        self.text_in_play_field = Vector2(Game.instance.width//4*3//2,
+                                          Game.instance.height//4*3)
+        self.text_right = Vector2(Game.instance.width//4*3+Game.instance.width//4//2,
+                                  Game.instance.height//8)
+        self.text_space = 40
+
+    def init(self):
+        self.score = 0
+        self.level = 1
+        self.ball = 48
+
+        self.block_manager = GetObject(BlockManager)
+        self.start_tag = True
+```
+
+* *self.text_in_play_field = Vector2(..)* .. position of the central text, like 'press key to start game'
+* *self.text_right = Vector2(..)* .. position of text right, like score
+* *self.text_space = 40* .. space between texts
+
+* *def init(self)* .. when game restarts, some properties of the ScoreManageer has to be initialized
+* *self.block_manager = GetObject(BlockManager)* .. get the BlockManager
+* *self.start_tag = True* .. ScoreManager is in starting mode
+
+The ScoreManager draws the numbers of current score itself. There is no special object like a SpriteRenderer. The ScoreManager is also inhereted by MixinDraw so it gets the draw method which is called every frame by the game engine.
+
+
+```python
+class ScoreManager(GameObject,MixinDraw):
+    ..
+    def draw(self, screen: pygame.Surface):
+        if self.start_tag:
+            draw_text(screen, 'press space to start game',48, ORANGE,
+                      self.text_in_play_field,alignment=TEXT_ALIGNMENT_MID)
+
+        draw_text(screen, f'Score {self.score}',48, ORANGE,
+                  self.text_right,alignment=TEXT_ALIGNMENT_MID)
+        draw_text(screen, f'Level {self.level}',48, ORANGE,
+                  Vector2(self.text_right.x, 
+                          self.text_right.y+self.text_space),
+                  alignment=TEXT_ALIGNMENT_MID)
+        draw_text(screen, f'Ball {self.ball}',48, ORANGE,
+                  Vector2(self.text_right.x, 
+                          self.text_right.y+2*self.text_space),
+                  alignment=TEXT_ALIGNMENT_MID)
+```
+
+* *if self.start_tag* .. when in starting mode show text 'press space to start game'
+* *draw_text(screen, f'Score {self.score}',48, ORANGE,self.text_right,alignment=TEXT_ALIGNMENT_MID)* .. text to be drawn in pygame, the convinient draw_text methods helps
+
+Parameter of draw_text
+
+* *screen* .. on which Surface should be drawn
+* *text* .. the text itself
+* *number of pixels*
+* *color*
+* *alignment* .. left or mid
+
+
+```python
+class ScoreManager(GameObject,MixinDraw):
+    ..
+    def update(self, delta_time: float):
+        if self.start_tag:
+            keys=pygame.key.get_pressed()
+        
+            if keys[pygame.K_SPACE]:
+                self.start_tag = False
+                Game.instance.get_object(Ball).start()
+```
+
+* *if self.start_tag:* .. when **ScoreManager** is in starting mode it waits until a key is pressed
+        
+* *if keys[pygame.K_SPACE]:* .. is it the space key?
+* *self.start_tag = False* .. than starting mode is over
+* *Game.instance.get_object(Ball).start()* .. get ball object and start it
+
+
+```python
+class Ball(GameObject):
+..     
+    def start(self):
+        self.rigidbody.velocity = Vector2(0,-1) * self.SPEED
+```
+
+Add **ScoreManager** to **Level**
+
+
+```python
+class Level(Scene):
+    def create_level(self,pattern):
+        self.background_color = WHITE
+        Game.instance.physic_system.gravity = (0.0,0.0)
+
+        score_manager = Game.instance.get_object(ScoreManager)
+
+        if not score_manager:
+            score_manager = self.add(ScoreManager())
+            self.dont_destroy_on_load(score_manager)
+```
+
+* *score_manager = Game.instance.get_object(ScoreManager)* .. search for **ScoreManager**
+* *if not score_manager* .. if not available, create one
+* *score_manager = self.add(ScoreManager())* .. create **ScoreManager** and add to scene
+* *self.dont_destroy_on_load(score_manager)* .. tell game engine never destroy **ScoreManager**
+
+When changing to a new scene (level), the game engine removes all old GameObjects before generating the new ones. However, the ScoreManager should always remain so that information such as highscores or the like do not disappear.
+
+### blocks and ball
+
+When the ball hits against the paddle it bounces.
+
+
+```python
+class Ball(GameObject):
+    SPEED = 240
+    ..
+        
+    def on_collision_enter(self, collider, impulse):
+        if isinstance(collider,Paddle):
+            factor = self.hit_factor(self.transform.position, 
+                                     collider.transform.position,collider.width)
+            direction = Vector2(factor,1).normalize()
+            self.rigidbody.velocity = direction * self.SPEED
+```
+
+* *def on_collision_enter(self, collider, impulse)* .. this methode is called if something collides with the ball
+* *if isinstance(collider,Paddle):* .. is the collider the paddle?
+* *factor = self.hit_factor(..)* .. the further the ball is from the center of the paddle, the more obliquely it will bounce off 
+
+
+```python
+class Ball(GameObject):
+    ..
+    def hit_factor(self, ball_position, paddle_position, paddle_width):
+        return (ball_position.x - paddle_position.x) / float(paddle_width)
+
+```
+
+The width of the paddle depends on the with of the picture that the **SpriteRenderer** is using.
+
+
+```python
+class Paddle(GameObject):
+    ..
+    @property
+    def width(self)->int:
+        return self.sprite_renderer.rect.width
+```
+
+If an block object collides with something, what only can be the ball, it will be removed.
+
+
+```python
+class Block(GameObject):
+    ..
+    def on_collision_enter(self, collider, impulse):
+        get_object(ScoreManager).add(80)
+        destroy(self)
+```
+
+* *get_object(ScoreManager).add(80)* .. get the ScoreManger and add 80 points to the score
+* *destroy(self)* .. the game engine will remove this block
+
+
+```python
+class ScoreManager(GameObject,MixinDraw):
+     ..
+    def add(self, value):
+        self.score += value
+
+        self.block_manager.count -=1
+
+        if self.block_manager.count == 0:
+            Game.instance.load_scene(self.level)
+            self.level += 1
+            self.ball += 2 
+```
+
+ScoreManager.add
+
+* *self.score += value* .. add points to the score
+* *self.block_manager.count -=1* .. tell **BlockManager** that one block is removed
+* *if self.block_manager.count == 0* .. are blocks available?
+* *Game.instance.load_scene(self.level)* .. if not, tell game engine to load next scene
+
+### restart
+
+If the ball flies out below, restart the game.
+
+
+```python
+class Ball(GameObject):
+    SPEED = 240
+    ..
+    def __init__(self):
+        ..
+        self.limit = Game.instance.height //4 * 5
+
+    def update(self, delta_time: float):
+        if self.transform.position.y > self.limit:
+            get_object(ScoreManager).restart()
+```
+
+The **ScoreManager** restarts the game.
+
+
+```python
+class ScoreManager(GameObject,MixinDraw):
+    ..
+    def restart(self):
+        self.ball -=1
+        if self.ball >= 0:
+            self.start_tag = True
+            get_object(Ball).restart()
+        else:
+            Game.instance.load_scene(0)
+            self.init()
+```
+
+* *self.ball -=1* .. one ball less
+* *if self.ball >= 0* .. is a ball left?
+* *self.start_tag = True* .. set starting mode
+* *get_object(Ball).restart()* .. restart ball
+* *Game.instance.load_scene(0)* .. if no ball left, start from level 0
+
+First game is completed.
 
 ## wonder game engine -  behind the curtain
 
@@ -321,8 +886,10 @@ A **TilePaletteItem** has an unique **id**, an unique **tile_type** and an **ima
 
 
 ```python
-tilemap.palette.add(TilePaletteItem(0, tile_type='ground', image=pygame.image.load('res_tile/ground.png')))
-tilemap.palette.add(TilePaletteItem(1, tile_type='wall', image=pygame.image.load('res_tile/wall.png')))
+tilemap.palette.add(TilePaletteItem(0, tile_type='ground', 
+                                    image=pygame.image.load('res_tile/ground.png')))
+tilemap.palette.add(TilePaletteItem(1, tile_type='wall', 
+                                    image=pygame.image.load('res_tile/wall.png')))
 ..
 ```
 
@@ -333,7 +900,7 @@ To create a tile from the palette at a specific position in the tile map use the
 tilemap.create_tile_from_palette(0,0,'ground')
 ```
 
-<img src="img/grid_system_example_1.png" width="320" align="left"><br><br><br><br><br><br>
+<img src="img/grid_system_example_1.png" width="320" align="left"><br><br><br><br><br><br><br><br><br><br><br>
 
 You can create a complete tile map with **set_all_tiles** 
 
@@ -348,7 +915,7 @@ tilemap.set_all_tiles([[1,1,1,1,1],
                        [1,1,1,1,1]])
 ```
 
-<img src="img/grid_system_example_2.png" width="320" align="left"><br><br><br><br><br><br>
+<img src="img/grid_system_example_2.png" width="320" align="left"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 A class **TileMap** can have more than one layer of tiles. Negative values are None.
 
@@ -363,7 +930,7 @@ tilemap.set_all_tiles([[-1,-1,-1,-1,-1],
                        [-1,-1,-1,-1,-1]],tile_layer=new_layer)
 ```
 
-<img src="img/grid_system_example_3.png" width="320" align="left"><br><br><br><br><br><br>
+<img src="img/grid_system_example_3.png" width="320" align="left"><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
 To see something tilemap as gameobject needs rendering component
 
@@ -376,7 +943,8 @@ With class **TileController** a tile can react
 
 
 ```python
-tilemap.palette.add(TilePaletteItem(4, tile_type='player', image=pygame.image.load('res_tile/player_01.png'),
+tilemap.palette.add(TilePaletteItem(4, tile_type='player', 
+                                    image=pygame.image.load('res_tile/player_01.png'),
                                     tile_controller_class=Player))
 ```
 
@@ -407,9 +975,10 @@ Class **TileController** has some convinient methods.
 
 ## Changelog
 
-|Version       |                                                                                          |
-|--------------|------------------------------------------------------------------------------------------|
-|  0.1.0       | first version |
+|Version       |                                                              |
+|--------------|--------------------------------------------------------------|
+|  0.1.0       | first version - August 2021                                  |
+|  0.1.1       | one tutorial and some documentation - Dezember 2021          |
 
 
 ```python
