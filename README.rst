@@ -30,7 +30,7 @@ Goals:
 -  explicit is better then implicit - wonder is only the frame for your
    game
 -  Component based - more components, less classes
--  Inspired by Unity 3D
+-  Inspired by Unity 3D - Similar names for object types and methods
 -  Physics engine included
 
 
@@ -174,9 +174,10 @@ that represents the **GameObject**. position add Racket to Scene
         DISTANCE = 20
         def __init__(self):
             super().__init__()
-            self.sprite_renderer = self.add(SpriteRenderer(self, load_from_file='res_blocks/paddleBlu.png'))
+            self.sprite_renderer = self.add(SpriteRenderer(self, 
+                                            load_from_file='res_blocks/paddleBlu.png'))
             self.transform.position = Vector2(Game.instance.width//4*3//2, 
-                                              Game.instance.height - self.sprite_renderer.rect.height - self.DISTANCE)
+                   Game.instance.height - self.sprite_renderer.rect.height - self.DISTANCE)
 
 
 -  *self.add* .. method self.add adds the component *SpriteRenderer* to
@@ -213,8 +214,9 @@ properties of the paddle.
             ..
             self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))
             self.rigidbody.fixed_rotation = True
-            self.add(BoxCollider(self,self.rigidbody,box=(self.sprite_renderer.rect.width,
-                                                          self.sprite_renderer.rect.height)))
+            self.add(BoxCollider(self,self.rigidbody,
+                                 box=(self.sprite_renderer.rect.width,
+                                      self.sprite_renderer.rect.height)))
 
 
 -  *Rigidbody(self,DYNAMIC_BODY)* .. the component **Rigidbody** defines
@@ -297,9 +299,12 @@ The **Scene** class creates the borders.
             self.add(Border(three_quarter, Border.HEIGHT, 
                             Vector2(three_quarter//2,Border.HEIGHT//2)))
             self.add(Border(Border.HEIGHT, Game.instance.height-Border.HEIGHT,
-                            Vector2(Border.HEIGHT//2, (Game.instance.height+Border.HEIGHT)//2) ))
+                            Vector2(Border.HEIGHT//2,
+                                    (Game.instance.height+Border.HEIGHT)//2) ))
             self.add(Border(Border.HEIGHT, 
-                            Game.instance.height-Border.HEIGHT,Vector2(three_quarter-Border.HEIGHT//2, (Game.instance.height+Border.HEIGHT)//2) ))
+                            Game.instance.height-Border.HEIGHT,
+                            Vector2(three_quarter-Border.HEIGHT//2, 
+                                    (Game.instance.height+Border.HEIGHT)//2) ))
 
 move paddle
 ~~~~~~~~~~~
@@ -367,11 +372,15 @@ A ball has a **SpriteRenderer**, a **Rigidbody**, and a
         SPEED = 240
         def __init__(self):
             super().__init__()
-            sprite_renderer = self.add(SpriteRenderer(self, load_from_file='res_blocks/ballGrey.png'))
-            self.transform.position = Vector2(Game.instance.width//4*3//2, Game.instance.height//2)
+            sprite_renderer = self.add(SpriteRenderer(self, 
+                                       load_from_file='res_blocks/ballGrey.png'))
+            self.transform.position = Vector2(Game.instance.width//4*3//2, 
+                                              Game.instance.height//2)
             
             self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))
-            self.add(CircleCollider(self,self.rigidbody,radius=sprite_renderer.rect.width//2,restitution=1.0,friction=0))
+            self.add(CircleCollider(self,self.rigidbody,
+                                    radius=sprite_renderer.rect.width//2,
+                                    restitution=1.0,friction=0))
             self.rigidbody.velocity = Vector2(0,0) * self.SPEED
             self.rigidbody.mass = 0.2
 
@@ -408,7 +417,9 @@ A single block has a **SpriteRenderer**, a **Rigidbody**, and a
             self.sprite_renderer = self.add(SpriteRenderer(self,load_from_file=file_name))
             self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))
             self.rigidbody.fixed_rotation = True
-            self.add(BoxCollider(self,self.rigidbody,box=(self.sprite_renderer.rect.width,self.sprite_renderer.rect.height)))
+            self.add(BoxCollider(self,self.rigidbody,
+                                 box=(self.sprite_renderer.rect.width,
+                                      self.sprite_renderer.rect.height)))
 
 Every level has a different pattern of blocks. An object of the class
 **BlockManager** creates the blocks according to the pattern of the
@@ -497,7 +508,8 @@ Add levels to *Game* object.
 .. code:: ipython3
 
     if __name__ == "__main__":
-        game = Game(width=860,height=600,name='game_blocks.py', scenes=[Level1(), Level2()])
+        game = Game(width=860,height=600,name='game_blocks.py', 
+                    scenes=[Level1(), Level2()])
         game.quit()
 
 
@@ -519,8 +531,10 @@ Tasks of the **ScoreManager** are
             
             self.init()
     
-            self.text_in_play_field = Vector2(Game.instance.width//4*3//2,Game.instance.height//4*3)
-            self.text_right = Vector2(Game.instance.width//4*3+Game.instance.width//4//2, Game.instance.height//8)
+            self.text_in_play_field = Vector2(Game.instance.width//4*3//2,
+                                              Game.instance.height//4*3)
+            self.text_right = Vector2(Game.instance.width//4*3+Game.instance.width//4//2,
+                                      Game.instance.height//8)
             self.text_space = 40
     
         def init(self):
@@ -557,11 +571,19 @@ the game engine.
         ..
         def draw(self, screen: pygame.Surface):
             if self.start_tag:
-                draw_text(screen, 'press space to start game',48, ORANGE,self.text_in_play_field,alignment=TEXT_ALIGNMENT_MID)
+                draw_text(screen, 'press space to start game',48, ORANGE,
+                          self.text_in_play_field,alignment=TEXT_ALIGNMENT_MID)
     
-            draw_text(screen, f'Score {self.score}',48, ORANGE,self.text_right,alignment=TEXT_ALIGNMENT_MID)
-            draw_text(screen, f'Level {self.level}',48, ORANGE,Vector2(self.text_right.x, self.text_right.y+self.text_space),alignment=TEXT_ALIGNMENT_MID)
-            draw_text(screen, f'Ball {self.ball}',48, ORANGE,Vector2(self.text_right.x, self.text_right.y+2*self.text_space),alignment=TEXT_ALIGNMENT_MID)
+            draw_text(screen, f'Score {self.score}',48, ORANGE,
+                      self.text_right,alignment=TEXT_ALIGNMENT_MID)
+            draw_text(screen, f'Level {self.level}',48, ORANGE,
+                      Vector2(self.text_right.x, 
+                              self.text_right.y+self.text_space),
+                      alignment=TEXT_ALIGNMENT_MID)
+            draw_text(screen, f'Ball {self.ball}',48, ORANGE,
+                      Vector2(self.text_right.x, 
+                              self.text_right.y+2*self.text_space),
+                      alignment=TEXT_ALIGNMENT_MID)
 
 -  *if self.start_tag* .. when in starting mode show text ‘press space
    to start game’
@@ -647,7 +669,8 @@ When the ball hits against the paddle it bounces.
             
         def on_collision_enter(self, collider, impulse):
             if isinstance(collider,Paddle):
-                factor = self.hit_factor(self.transform.position, collider.transform.position,collider.width)
+                factor = self.hit_factor(self.transform.position, 
+                                         collider.transform.position,collider.width)
                 direction = Vector2(factor,1).normalize()
                 self.rigidbody.velocity = direction * self.SPEED
 
@@ -928,8 +951,10 @@ map. With changing position you can move the complete map.
 
 .. code:: ipython3
 
-    tilemap.palette.add(TilePaletteItem(0, tile_type='ground', image=pygame.image.load('res_tile/ground.png')))
-    tilemap.palette.add(TilePaletteItem(1, tile_type='wall', image=pygame.image.load('res_tile/wall.png')))
+    tilemap.palette.add(TilePaletteItem(0, tile_type='ground', 
+                                        image=pygame.image.load('res_tile/ground.png')))
+    tilemap.palette.add(TilePaletteItem(1, tile_type='wall', 
+                                        image=pygame.image.load('res_tile/wall.png')))
     ..
 
 To create a tile from the palette at a specific position in the tile map
@@ -982,7 +1007,8 @@ With class **TileController** a tile can react
 
 .. code:: ipython3
 
-    tilemap.palette.add(TilePaletteItem(4, tile_type='player', image=pygame.image.load('res_tile/player_01.png'),
+    tilemap.palette.add(TilePaletteItem(4, tile_type='player', 
+                                        image=pygame.image.load('res_tile/player_01.png'),
                                         tile_controller_class=Player))
 
 Class **Player** is in gameloop update cycle
@@ -1008,9 +1034,10 @@ Class **TileController** has some convinient methods.
 Changelog
 ---------
 
-======= =============
+======= ===================================================
 Version 
-======= =============
-0.1.0   first version
-======= =============
+======= ===================================================
+0.1.0   first version - August 2021
+0.1.1   one tutorial and some documentation - Dezember 2021
+======= ===================================================
 

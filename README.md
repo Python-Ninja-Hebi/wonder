@@ -23,7 +23,7 @@ Goals:
    
 * explicit is better then implicit - wonder is only the frame for your game
 * Component based - more components, less classes
-* Inspired by Unity 3D
+* Inspired by Unity 3D - Similar names for object types and methods
 * Physics engine included
 
 
@@ -160,9 +160,10 @@ class Paddle(GameObject):
     DISTANCE = 20
     def __init__(self):
         super().__init__()
-        self.sprite_renderer = self.add(SpriteRenderer(self, load_from_file='res_blocks/paddleBlu.png'))
+        self.sprite_renderer = self.add(SpriteRenderer(self, 
+                                        load_from_file='res_blocks/paddleBlu.png'))
         self.transform.position = Vector2(Game.instance.width//4*3//2, 
-                                          Game.instance.height - self.sprite_renderer.rect.height - self.DISTANCE)
+               Game.instance.height - self.sprite_renderer.rect.height - self.DISTANCE)
 
 ```
 
@@ -197,8 +198,9 @@ class Paddle(GameObject):
         ..
         self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))
         self.rigidbody.fixed_rotation = True
-        self.add(BoxCollider(self,self.rigidbody,box=(self.sprite_renderer.rect.width,
-                                                      self.sprite_renderer.rect.height)))
+        self.add(BoxCollider(self,self.rigidbody,
+                             box=(self.sprite_renderer.rect.width,
+                                  self.sprite_renderer.rect.height)))
 
 ```
 
@@ -271,9 +273,12 @@ class Level(Scene):
         self.add(Border(three_quarter, Border.HEIGHT, 
                         Vector2(three_quarter//2,Border.HEIGHT//2)))
         self.add(Border(Border.HEIGHT, Game.instance.height-Border.HEIGHT,
-                        Vector2(Border.HEIGHT//2, (Game.instance.height+Border.HEIGHT)//2) ))
+                        Vector2(Border.HEIGHT//2,
+                                (Game.instance.height+Border.HEIGHT)//2) ))
         self.add(Border(Border.HEIGHT, 
-                        Game.instance.height-Border.HEIGHT,Vector2(three_quarter-Border.HEIGHT//2, (Game.instance.height+Border.HEIGHT)//2) ))
+                        Game.instance.height-Border.HEIGHT,
+                        Vector2(three_quarter-Border.HEIGHT//2, 
+                                (Game.instance.height+Border.HEIGHT)//2) ))
 ```
 
 ### move paddle
@@ -311,7 +316,7 @@ class Paddle(GameObject):
 
 You can switch to a special display for troubleshooting in connection with the physics engine.
 
-<img src="img/game_blocks_4.png" width="256" align="left"><br><br><br><br><br><br>
+<img src="img/game_blocks_4.png" width="256" align="left"><br><br><br><br><br><br><br><br><br><br>
 
 
 ```python
@@ -335,11 +340,15 @@ class Ball(GameObject):
     SPEED = 240
     def __init__(self):
         super().__init__()
-        sprite_renderer = self.add(SpriteRenderer(self, load_from_file='res_blocks/ballGrey.png'))
-        self.transform.position = Vector2(Game.instance.width//4*3//2, Game.instance.height//2)
+        sprite_renderer = self.add(SpriteRenderer(self, 
+                                   load_from_file='res_blocks/ballGrey.png'))
+        self.transform.position = Vector2(Game.instance.width//4*3//2, 
+                                          Game.instance.height//2)
         
         self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))
-        self.add(CircleCollider(self,self.rigidbody,radius=sprite_renderer.rect.width//2,restitution=1.0,friction=0))
+        self.add(CircleCollider(self,self.rigidbody,
+                                radius=sprite_renderer.rect.width//2,
+                                restitution=1.0,friction=0))
         self.rigidbody.velocity = Vector2(0,0) * self.SPEED
         self.rigidbody.mass = 0.2
 ```
@@ -359,7 +368,7 @@ class Level(Scene):
         self.add(Ball())
 ```
 
-<img src="img/game_blocks_5.png" width="256" align="left"><br><br><br><br><br><br>
+<img src="img/game_blocks_5.png" width="256" align="left"><br><br><br><br><br><br><br><br><br><br>
 
 ### create block
 
@@ -373,7 +382,9 @@ class Block(GameObject):
         self.sprite_renderer = self.add(SpriteRenderer(self,load_from_file=file_name))
         self.rigidbody = self.add(Rigidbody(self,DYNAMIC_BODY))
         self.rigidbody.fixed_rotation = True
-        self.add(BoxCollider(self,self.rigidbody,box=(self.sprite_renderer.rect.width,self.sprite_renderer.rect.height)))
+        self.add(BoxCollider(self,self.rigidbody,
+                             box=(self.sprite_renderer.rect.width,
+                                  self.sprite_renderer.rect.height)))
 ```
 
 Every level has a different pattern of blocks.  An object of the class **BlockManager** creates the blocks according to the pattern of the level.
@@ -459,11 +470,12 @@ Add levels to *Game* object.
 
 ```python
 if __name__ == "__main__":
-    game = Game(width=860,height=600,name='game_blocks.py', scenes=[Level1(), Level2()])
+    game = Game(width=860,height=600,name='game_blocks.py', 
+                scenes=[Level1(), Level2()])
     game.quit()
 ```
 
-<img src="img/game_blocks_6.png" width="256" align="left"><br><br><br><br><br><br>
+<img src="img/game_blocks_6.png" width="256" align="left"><br><br><br><br><br><br><br><br><br><br>
 
 ### create scoremanager
 
