@@ -1,0 +1,399 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>game_blocks &mdash; wonder - python game engine 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> wonder - python game engine
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">wonder - python game engine</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Module code</a> &raquo;</li>
+        
+      <li>game_blocks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for game_blocks</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">wonder</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="Paddle"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Paddle">[docs]</a><span class="k">class</span> <span class="nc">Paddle</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+    <span class="n">DISTANCE</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">SPEED</span> <span class="o">=</span> <span class="mi">120</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sprite_renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SpriteRenderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_from_file</span><span class="o">=</span><span class="s1">&#39;res_blocks/paddleBlu.png&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">4</span><span class="o">*</span><span class="mi">3</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> 
+                                          <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sprite_renderer</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">DISTANCE</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Rigidbody</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">DYNAMIC_BODY</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="o">.</span><span class="n">fixed_rotation</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">BoxCollider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="p">,</span><span class="n">box</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sprite_renderer</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="p">,</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">sprite_renderer</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="Paddle.update"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Paddle.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_time</span><span class="p">):</span>
+        <span class="n">direction</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="n">keys</span><span class="o">=</span><span class="n">pygame</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">get_pressed</span><span class="p">()</span>
+    
+        <span class="k">if</span> <span class="n">keys</span><span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">K_RIGHT</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">keys</span><span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">K_LEFT</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">keys</span><span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">K_ESCAPE</span><span class="p">]:</span>
+            <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">debug_physic_system_tag</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">debug_physic_system_tag</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">direction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SPEED</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">-&gt;</span><span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sprite_renderer</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span></div>
+        
+<div class="viewcode-block" id="Ball"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Ball">[docs]</a><span class="k">class</span> <span class="nc">Ball</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+    <span class="n">SPEED</span> <span class="o">=</span> <span class="mi">240</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">sprite_renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SpriteRenderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_from_file</span><span class="o">=</span><span class="s1">&#39;res_blocks/ballGrey.png&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">4</span><span class="o">*</span><span class="mi">3</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="p">:</span><span class="n">Rigidbody</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Rigidbody</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">DYNAMIC_BODY</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">CircleCollider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="p">,</span><span class="n">radius</span><span class="o">=</span><span class="n">sprite_renderer</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">restitution</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">friction</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SPEED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="o">.</span><span class="n">mass</span> <span class="o">=</span> <span class="mf">0.2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">limit</span> <span class="o">=</span> <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span> <span class="o">//</span><span class="mi">4</span> <span class="o">*</span> <span class="mi">5</span>
+    
+<div class="viewcode-block" id="Ball.start"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Ball.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SPEED</span></div>
+
+<div class="viewcode-block" id="Ball.restart"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Ball.restart">[docs]</a>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">4</span><span class="o">*</span><span class="mi">3</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Ball.on_collision_enter"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Ball.on_collision_enter">[docs]</a>    <span class="k">def</span> <span class="nf">on_collision_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collider</span><span class="p">,</span> <span class="n">impulse</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">collider</span><span class="p">,</span><span class="n">Paddle</span><span class="p">):</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hit_factor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">collider</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">position</span><span class="p">,</span><span class="n">collider</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">normalize</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="n">direction</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">SPEED</span></div>
+
+<div class="viewcode-block" id="Ball.hit_factor"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Ball.hit_factor">[docs]</a>    <span class="k">def</span> <span class="nf">hit_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ball_position</span><span class="p">,</span> <span class="n">paddle_position</span><span class="p">,</span> <span class="n">paddle_width</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">ball_position</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">paddle_position</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">paddle_width</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Ball.update"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Ball.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">limit</span><span class="p">:</span>
+            <span class="n">get_object</span><span class="p">(</span><span class="n">ScoreManager</span><span class="p">)</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span></div></div>
+
+<div class="viewcode-block" id="Block"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Block">[docs]</a><span class="k">class</span> <span class="nc">Block</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sprite_renderer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SpriteRenderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">load_from_file</span><span class="o">=</span><span class="n">file_name</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Rigidbody</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">DYNAMIC_BODY</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="o">.</span><span class="n">fixed_rotation</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">BoxCollider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rigidbody</span><span class="p">,</span><span class="n">box</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sprite_renderer</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">sprite_renderer</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="p">)))</span>
+
+<div class="viewcode-block" id="Block.on_collision_enter"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Block.on_collision_enter">[docs]</a>    <span class="k">def</span> <span class="nf">on_collision_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collider</span><span class="p">,</span> <span class="n">impulse</span><span class="p">):</span>
+        <span class="n">get_object</span><span class="p">(</span><span class="n">ScoreManager</span><span class="p">)</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">80</span><span class="p">)</span>
+        <span class="n">destroy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Border"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Border">[docs]</a><span class="k">class</span> <span class="nc">Border</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+    <span class="n">HEIGHT</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">((</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
+        <span class="n">image</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">GRAY</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SpriteRenderer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">position</span>
+
+        <span class="n">rigidbody</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Rigidbody</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">STATIC_BODY</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">BoxCollider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rigidbody</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="p">(</span><span class="n">width</span><span class="p">,</span><span class="n">height</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="BlockManager"><a class="viewcode-back" href="../game_blocks.html#game_blocks.BlockManager">[docs]</a><span class="k">class</span> <span class="nc">BlockManager</span><span class="p">(</span><span class="n">GameObject</span><span class="p">):</span>
+    <span class="n">FILES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;res_blocks/element_blue_rectangle.png&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;res_blocks/element_green_rectangle.png&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;res_blocks/element_red_rectangle.png&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;res_blocks/element_yellow_rectangle.png&#39;</span><span class="p">]</span>
+    <span class="n">SPACE</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scene</span><span class="p">:</span><span class="n">Scene</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene</span> <span class="o">=</span> <span class="n">scene</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="BlockManager.make"><a class="viewcode-back" href="../game_blocks.html#game_blocks.BlockManager.make">[docs]</a>    <span class="k">def</span> <span class="nf">make</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block_pattern</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">block_pattern</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">file_nr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FILES</span><span class="p">[</span><span class="n">file_nr</span><span class="p">]))</span>
+                <span class="n">block</span><span class="o">.</span><span class="n">transform</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">SPACE</span><span class="o">+</span><span class="n">block</span><span class="o">.</span><span class="n">sprite_renderer</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="o">*</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">SPACE</span><span class="o">*</span><span class="n">j</span><span class="p">,</span>
+                                                   <span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">SPACE</span><span class="o">+</span><span class="n">block</span><span class="o">.</span><span class="n">sprite_renderer</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mf">0.5</span><span class="p">)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">SPACE</span><span class="o">*</span><span class="n">i</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="ScoreManager"><a class="viewcode-back" href="../game_blocks.html#game_blocks.ScoreManager">[docs]</a><span class="k">class</span> <span class="nc">ScoreManager</span><span class="p">(</span><span class="n">GameObject</span><span class="p">,</span><span class="n">MixinDraw</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_in_play_field</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">4</span><span class="o">*</span><span class="mi">3</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span><span class="o">//</span><span class="mi">4</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_right</span> <span class="o">=</span> <span class="n">Vector2</span><span class="p">(</span><span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">4</span><span class="o">*</span><span class="mi">3</span><span class="o">+</span><span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">4</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span><span class="o">//</span><span class="mi">8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_space</span> <span class="o">=</span> <span class="mi">40</span>
+
+<div class="viewcode-block" id="ScoreManager.init"><a class="viewcode-back" href="../game_blocks.html#game_blocks.ScoreManager.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ball</span> <span class="o">=</span> <span class="mi">48</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_manager</span> <span class="o">=</span> <span class="n">GetObject</span><span class="p">(</span><span class="n">BlockManager</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_tag</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ScoreManager.update"><a class="viewcode-back" href="../game_blocks.html#game_blocks.ScoreManager.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_time</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_tag</span><span class="p">:</span>
+            <span class="n">keys</span><span class="o">=</span><span class="n">pygame</span><span class="o">.</span><span class="n">key</span><span class="o">.</span><span class="n">get_pressed</span><span class="p">()</span>
+        
+            <span class="k">if</span> <span class="n">keys</span><span class="p">[</span><span class="n">pygame</span><span class="o">.</span><span class="n">K_SPACE</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">start_tag</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Ball</span><span class="p">)</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ScoreManager.draw"><a class="viewcode-back" href="../game_blocks.html#game_blocks.ScoreManager.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">screen</span><span class="p">:</span> <span class="n">pygame</span><span class="o">.</span><span class="n">Surface</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_tag</span><span class="p">:</span>
+            <span class="n">draw_text</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="s1">&#39;press space to start game&#39;</span><span class="p">,</span><span class="mi">48</span><span class="p">,</span> <span class="n">ORANGE</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">text_in_play_field</span><span class="p">,</span><span class="n">alignment</span><span class="o">=</span><span class="n">TEXT_ALIGNMENT_MID</span><span class="p">)</span>
+
+        <span class="n">draw_text</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Score </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="mi">48</span><span class="p">,</span> <span class="n">ORANGE</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">text_right</span><span class="p">,</span><span class="n">alignment</span><span class="o">=</span><span class="n">TEXT_ALIGNMENT_MID</span><span class="p">)</span>
+        <span class="n">draw_text</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Level </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="mi">48</span><span class="p">,</span> <span class="n">ORANGE</span><span class="p">,</span><span class="n">Vector2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_right</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_right</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">text_space</span><span class="p">),</span><span class="n">alignment</span><span class="o">=</span><span class="n">TEXT_ALIGNMENT_MID</span><span class="p">)</span>
+        <span class="n">draw_text</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Ball </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ball</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="mi">48</span><span class="p">,</span> <span class="n">ORANGE</span><span class="p">,</span><span class="n">Vector2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_right</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_right</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">text_space</span><span class="p">),</span><span class="n">alignment</span><span class="o">=</span><span class="n">TEXT_ALIGNMENT_MID</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ScoreManager.add"><a class="viewcode-back" href="../game_blocks.html#game_blocks.ScoreManager.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">+=</span> <span class="n">value</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">block_manager</span><span class="o">.</span><span class="n">count</span> <span class="o">-=</span><span class="mi">1</span>
+        <span class="c1">#print(self.block_manager.count)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">block_manager</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">load_scene</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ball</span> <span class="o">+=</span> <span class="mi">2</span> </div>
+    
+<div class="viewcode-block" id="ScoreManager.restart"><a class="viewcode-back" href="../game_blocks.html#game_blocks.ScoreManager.restart">[docs]</a>    <span class="k">def</span> <span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ball</span> <span class="o">-=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ball</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_tag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">get_object</span><span class="p">(</span><span class="n">Ball</span><span class="p">)</span><span class="o">.</span><span class="n">restart</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">load_scene</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">()</span></div></div>
+
+<div class="viewcode-block" id="Level"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Level">[docs]</a><span class="k">class</span> <span class="nc">Level</span><span class="p">(</span><span class="n">Scene</span><span class="p">):</span>
+<div class="viewcode-block" id="Level.create_level"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Level.create_level">[docs]</a>    <span class="k">def</span> <span class="nf">create_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pattern</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">background_color</span> <span class="o">=</span> <span class="n">WHITE</span>
+        <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">physic_system</span><span class="o">.</span><span class="n">gravity</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">)</span>
+
+        <span class="n">score_manager</span> <span class="o">=</span> <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">ScoreManager</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">score_manager</span><span class="p">:</span>
+            <span class="n">score_manager</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ScoreManager</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dont_destroy_on_load</span><span class="p">(</span><span class="n">score_manager</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Paddle</span><span class="p">())</span>
+
+        <span class="n">three_quarter</span> <span class="o">=</span> <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">width</span><span class="o">//</span><span class="mi">4</span><span class="o">*</span><span class="mi">3</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Border</span><span class="p">(</span><span class="n">three_quarter</span><span class="p">,</span> <span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="p">,</span> <span class="n">Vector2</span><span class="p">(</span><span class="n">three_quarter</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="o">//</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Border</span><span class="p">(</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="p">,</span> <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="p">,</span><span class="n">Vector2</span><span class="p">(</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span><span class="o">+</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span> <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Border</span><span class="p">(</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="p">,</span> <span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="p">,</span><span class="n">Vector2</span><span class="p">(</span><span class="n">three_quarter</span><span class="o">-</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">Game</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">height</span><span class="o">+</span><span class="n">Border</span><span class="o">.</span><span class="n">HEIGHT</span><span class="p">)</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span> <span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Ball</span><span class="p">())</span>
+
+        <span class="n">block_manager</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">BlockManager</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">block_manager</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="Level1"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Level1">[docs]</a><span class="k">class</span> <span class="nc">Level1</span><span class="p">(</span><span class="n">Level</span><span class="p">):</span>
+<div class="viewcode-block" id="Level1.create"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Level1.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_level</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>
+                            <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>
+                            <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span>
+                            <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]])</span>        </div></div>
+
+<div class="viewcode-block" id="Level2"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Level2">[docs]</a><span class="k">class</span> <span class="nc">Level2</span><span class="p">(</span><span class="n">Level</span><span class="p">):</span>
+<div class="viewcode-block" id="Level2.create"><a class="viewcode-back" href="../game_blocks.html#game_blocks.Level2.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_level</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]])</span>    </div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="n">Game</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">860</span><span class="p">,</span><span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;game_blocks.py&#39;</span><span class="p">,</span><span class="n">scenes</span><span class="o">=</span><span class="p">[</span><span class="n">Level1</span><span class="p">(),</span> <span class="n">Level2</span><span class="p">()])</span>
+    <span class="n">game</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2021, python ninja hebi
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1030,6 +1030,33 @@ Class **TileController** has some convinient methods.
 | ``tile.has_type('ground')`` .. has tile the that type
 | ``set_position(new_pos)``.. change position of tile
 
+using editor tiled
+~~~~~~~~~~~~~~~~~~
+
+You can also use the free editor **Tiled** for creating **TileMap**.
+https://www.mapeditor.org
+
+
+
+All things are saved in a JSON file (res_tile/tile.json). You can work
+with layers.
+
+.. code:: ipython3
+
+    tilemap = TileMap.createFromTiledJSON('res_tile/tile.json')
+
+In Tiled you can give every tile a specific tile type.
+
+
+
+.. code:: ipython3
+
+    tilemap = TileMap.createFromTiledJSON('res_tile/tile.json',
+                                          {'box':Box, 'player':Player})
+
+So every tile type can have its own controller.
+
+Complete example *game_tile_tiled.py*
 
 Changelog
 ---------

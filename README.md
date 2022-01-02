@@ -80,7 +80,7 @@ Alleyway https://en.wikipedia.org/wiki/Alleyway_(video_game)
 
 You can find the complete game in the file *game_blocks.py*
 
-<img src="img/game_blocks.png" width="256" align="left"><br><br><br><br><br><br><br><br><br><br>
+<img src="img/game_blocks.png" width="512" align="left"><br><br><br><br><br><br><br><br><br><br>
 
 ### main game
 
@@ -980,10 +980,33 @@ Class **TileController** has some convinient methods.
 `tile.has_type('ground')` .. has tile the that type  
 `set_position(new_pos)`.. change position of tile  
 
+### using editor tiled
+
+You can also use the free editor **Tiled** for creating **TileMap**.
+https://www.mapeditor.org
+
+<img src="img/tiled.png" width="512" align="left"><br><br><br><br><br><br><br><br><br><br>
+
+All things are saved in a JSON file (res_tile/tile.json). You can work with layers.
+
 
 ```python
-
+tilemap = TileMap.createFromTiledJSON('res_tile/tile.json')
 ```
+
+In Tiled you can give every tile a specific tile type.
+
+<img src="img/tiled_1.png" width="256" align="left"><br><br><br><br><br><br><br><br><br><br>
+
+
+```python
+tilemap = TileMap.createFromTiledJSON('res_tile/tile.json',
+                                      {'box':Box, 'player':Player})
+```
+
+So every tile type can have its own controller.
+
+Complete example *game_tile_tiled.py*
 
 ## Changelog
 

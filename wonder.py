@@ -20,7 +20,9 @@ from pygame.math import Vector2, Vector3
 from pygame.font import Font
 
 import random
+import json
 import math
+import zmq
 
 from typing import Dict, List, OrderedDict, Set, Optional, Union, Tuple, Any, Type
 import traceback
@@ -428,6 +430,52 @@ class Animator(Component):
     def update(self, delta_time: float)->None:
         self.states[self.state].update(delta_time)
 
+# ----- remote system ----
+class RemoteCommand:
+    def __init__(self,name:bytearray) -> None:
+        self.name:bytearray=name
+        self.argument:bytearray=None
+            
+class RemoteInput:
+    """Server to get remote input
+    """
+    def __init__(self,command_list:List[RemoteCommand]) -> None:
+        self.commands:Dict={}
+        for j in command_list:
+            self.commands[j.name]=j
+        context = zmq.Context()
+        self.socket = context.socket(zmq.REP)
+        self.socket.bind('tcp://*:5555')
+    
+    def command(self,delta_time:float)->RemoteCommand:
+        result:RemoteCommand = None
+        try:
+            message:bytearray = self.socket.recv(flags=zmq.NOBLOCK)
+            items = message.split(b' ')
+            result = self.commands[items[0]]
+            if len(items)>1:
+                result.argument = items[1]
+            else:
+                result.argument = None
+        except zmq.Again as e:
+            pass
+        return result
+
+    def ready(self)->None:
+        self.socket.send(b'ready')
+
+class RemoteControl:
+    """Client to control object with remote
+    """
+    def __init__(self) -> None:
+        context = zmq.Context()
+        self.socket = context.socket(zmq.REQ)
+        self.socket.connect('tcp://localhost:5555')
+
+    def send(self, command:bytearray)->None:
+        self.socket.send(command)
+        message = self.socket.recv()
+
 # ----- particle system ----
 
 class Particle:
@@ -524,10 +572,28 @@ class ParticleSystem(Component, MixinDraw):
 
 # ----- tile system ----    
 class TilePaletteItem:
-    def __init__(self, id:int, tile_type:str, image:Surface, tile_controller_class:Type[TileController]=None) -> None:
+    """Element of a TilePalette
+    """
+    def __init__(self, id:int, tile_type:str, 
+                 image:Surface,
+                 scale:float=None,
+                 tile_controller_class:Type[TileController]=None) -> None:
+        """Create TilePaletteItem
+
+        Args:
+            id (int): unique id
+            tile_type (str): unique name
+            image (Surface): [description]
+            scale (float, optional): [description]. Defaults to None.
+            tile_controller_class (Type[TileController], optional): [description]. Defaults to None.
+        """
         self.id:int = id
         self.tile_type = tile_type
         self.image:Surface = image
+
+        if scale:
+            self.image = pygame.transform.scale(self.image, (int(self.image.get_width()*scale), 
+                                                             int(self.image.get_height()*scale)))
         self.tile_controller_class = tile_controller_class
 
 class Tile:
@@ -555,7 +621,7 @@ class Tile:
         return self._position
 
     def set_position(self, value:Vector2)->None:
-        self.layer.tile_map.set_tile(self,value,self.layer.id)
+        self.layer.tilemap.set_tile(self,value,self.layer.id)
 
     def has_type(self, tile_type:str)->bool:
         return self.tile_palette.tile_type == tile_type
@@ -573,7 +639,7 @@ class TileController(MixinUpdate):
         self.tile.set_position(value)
 
     def get_tile(self, pos:Vector2)->Tile:
-        return self.tile.layer.tile_map.get_tile(pos)
+        return self.tile.layer.tilemap.get_tile(pos)
 
     
 
@@ -600,24 +666,52 @@ class TileMapRenderer(Component,MixinDraw):
         for x in range(min_x,max_x):
             for y in range(min_y, max_y):
                 for z in range(len(self.tilemap.layer)):
-                    t = self.tilemap.layer[z].get_tile(x,y)
-                    if t:
-                        if t.visible:
-                            #if not Game.instance.camera:
-                            screen.blit(t.image, (pos.x+self.tilemap.tile_width*x ,pos.y+self.tilemap.tile_height*y ,
-                                                    self.tilemap.tile_width,self.tilemap.tile_height))
-                                
-                            #else:
-                            #    screen.blit(t.image, (self.tilemap.tile_width*x-Game.instance.camera.offset_x ,
-                            #                          self.tilemap.tile_height*y-Game.instance.camera.offset_y,
-                            #                          self.tilemap.tile_width,
-                            #                          self.tilemap.tile_height))
+                    if isinstance(self.tilemap.layer[z],TileMapLayer):
+                        t = self.tilemap.layer[z].get_tile(x,y)
+                        if t:
+                            if t.visible:
+                                #if not Game.instance.camera:
+                                screen.blit(t.image, (pos.x+self.tilemap.tile_width*x ,pos.y+self.tilemap.tile_height*y ,
+                                                        self.tilemap.tile_width,self.tilemap.tile_height))
+                                    
+                                #else:
+                                #    screen.blit(t.image, (self.tilemap.tile_width*x-Game.instance.camera.offset_x ,
+                                #                          self.tilemap.tile_height*y-Game.instance.camera.offset_y,
+                                #                          self.tilemap.tile_width,
+                                #                          self.tilemap.tile_height))
 
-class TileMapLayer:
+class TileMapObject:
+    """Part of a TileMapObjectLayer
+    """
+    def __init__(self, heigth:int, width:int, name:str, type:str ,x:int,y:int) -> None:
+        self.height:int = heigth
+        self.width:int = width
+        self.name:str = name
+        self.type:str = type
+        self.x:int = x
+        self.y:int = y
+        
+
+class TileMapAbstractLayer:
     def __init__(self,tilemap:TileMap,id:int) -> None:
-        self.tile_map:TileMap = tilemap
-        self.id:int = id
-        self._tiles = [[None] * self.tile_map.height for _ in range(self.tile_map.width)]
+        self.tilemap=tilemap
+        self.id = id
+        
+        
+class TileMapObjectLayer(TileMapAbstractLayer):
+    """Layer for objects
+    """
+    def __init__(self,tilemap:TileMap,id:int) -> None:
+        super().__init__(tilemap,id)
+        self.objects:List[TileMapObject]=[]
+
+    def add (self, object:TileMapObject)->None:
+        self.objects.append(object)
+
+class TileMapLayer(TileMapAbstractLayer):
+    def __init__(self,tilemap:TileMap,id:int) -> None:
+        super().__init__(tilemap,id)
+        self._tiles = [[None] * self.tilemap.height for _ in range(self.tilemap.width)]
 
     def set_tile(self, tile:Tile, x:int, y:int)->None:
         self._tiles[int(x)][int(y)]=tile
@@ -645,7 +739,112 @@ class TilePalette:
         self._store[item.tile_type]=item
         return item
 
+class TiledReader:
+    """Reads a JSON file created with MapEditor Tiled to create a TileMap
+    """
+    def __init__(self,file_name:str, controller_list = None) -> None:
+        self.file_name=file_name
+        self.controller_list = controller_list
+        self.path,_ = os.path.split(file_name)
+        with open(self.file_name, 'r') as f:
+            map = json.load(f)
+            self.height = map['height']
+            self.width = map['width']
+            self.tile_height = map['tileheight']
+            self.tile_width = map['tilewidth']
+            self.layers = map['layers']
+            self.tilesets = map['tilesets']
+
+    def create_object_layer(self,tilemap:TileMap,objects:List)->TileMapObjectLayer:
+        layer = tilemap.add_objectlayer()
+        for o in objects:
+            layer.add(TileMapObject(
+                        o["height"],o[ "width"],o["name"],o["type"],
+                        o["x"],o["y"]))
+        return layer
+
+    def create(self)->TileMap:
+        tilemap = TileMap(self.width,self.height,self.tile_width,self.tile_height)
+        self.create_palette(tilemap)
+        for l in self.layers:
+            if l['type'] == 'objectgroup':
+                self.create_object_layer(tilemap, l['objects'])
+            elif l['type'] == 'tilelayer':
+                self.create_map_layer(tilemap, l['data'])
+            else:
+                raise Exception(f"unknown layer type {l['type']}")
+        return tilemap
+
+    def create_map_layer(self, tilemap:TileMap, data:List[int])->TileMapLayer:
+        layer = tilemap.add_tilelayer()
+        x=0
+        y=0
+        for d in data:
+            if d != 0:
+                tilemap.create_tile_from_palette(x,y,d,layer.id)
+            x+=1
+            if x == tilemap.width:
+                y+=1
+                x=0
+        return layer
+
+    def create_palette(self, tilemap:TileMap):
+        tiles:Dict[int,Surface]={}
+        tile_types:Dict[int,str]={}
+        all_data:Set[int]=set()
+
+        for l in self.layers:
+            if l['type'] == 'tilelayer':
+                all_data = all_data.union(set(l['data']))
+
+        for t in self.tilesets:
+            first_id = t['firstgid']
+            tile_count = t['tilecount']
+            file_name = t['image']
+            if 'tiles' in t:
+                for tile_type in t['tiles']:
+                    tile_types[tile_type['id']+first_id]=tile_type['type']
+            if self.path:
+                file_name = self.path + '/' + file_name
+            image = pygame.image.load(file_name)
+
+            if tile_count == 1 and first_id in all_data:
+                tiles[first_id] = image
+            else:
+                for id in range(first_id,first_id+tile_count): 
+                    if id in all_data:
+                        tiles[id] = self.get_tile_from_image(image, t['columns'], 
+                                                             id, first_id, t['tilewidth'],
+                                                             t['tileheight'],t['spacing'])
+                
+        for tile_id in tiles:
+            tile_type = None
+            if tile_id in tile_types:
+                tile_type = tile_types[tile_id]
+            else:
+                tile_type = 'id_'+str(tile_id)
+            controller = None
+            if tile_type in self.controller_list:
+                controller = self.controller_list[tile_type]
+            tilemap.palette.add(TilePaletteItem(tile_id, tile_type=tile_type, image=tiles[tile_id],tile_controller_class=controller))
+            
+    def get_tile_from_image(self, image:Surface, columns:int, id:int, first_id:int ,tile_width:int,tile_height:int,spacing:int)->pygame.Surface:
+        id -= first_id
+        x = (id % columns)
+        y = (id // columns)
+        x_s = x*tile_width+(x+1)*spacing
+        y_s = y*tile_height+(y+1)*spacing
+        rect = (x_s, y_s, 
+                    tile_width, tile_height)
+        return image.subsurface(rect)
+
 class TileMap(GameObject):
+
+    @classmethod
+    def createFromTiledJSON(cls, file_name:str, contoler_list=None)->TileMap:
+        reader = TiledReader(file_name, contoler_list)
+        return reader.create()
+
     def __init__(self, width:int, height:int, tile_width:int, tile_height:int) -> None:
         super().__init__()
         self.width:int = width
@@ -656,10 +855,22 @@ class TileMap(GameObject):
         self.controller_list:List[TileController]=[]
         self.palette:TilePalette  = TilePalette()
 
+    def add_tilelayer(self)->TileMapLayer:
+        layer = TileMapLayer(self,self.get_next_layer_id())
+        self.layer.append(layer)
+        return layer
+    
+    def add_objectlayer(self)->TileMapObjectLayer:
+        layer = TileMapObjectLayer(self,self.get_next_layer_id())
+        self.layer.append(layer)
+        return layer
+
     def add_layer(self)->int:
-        new_layer = len(self.layer)
-        self.layer.append(TileMapLayer(self,new_layer))
-        return new_layer
+        layer = self.add_tilelayer()
+        return layer.id
+
+    def get_next_layer_id(self)->int:
+        return len(self.layer)
 
     def get_tile(self,pos,layer=-1)->Tile:
         if layer == -1:
